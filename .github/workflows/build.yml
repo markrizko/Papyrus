@@ -16,7 +16,7 @@ jobs:
           lfs: true
       - name: Build
         id: build
-        uses: markrizko/papyrus@v0.0.1
+        uses: markrizko/papyrus@v2
         with:
           name: papyrus
           preset: ${{ matrix.platform }}
