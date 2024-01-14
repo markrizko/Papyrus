@@ -34,9 +34,11 @@ func _gui_input(event):
 	elif event is InputEventMouseMotion and current_line_instance:
 		current_line_instance.update_drawing(event.position)
 
-func _on_clear_button_pressed():
-	line_count = 0
-	for line in get_tree().get_nodes_in_group("line"):
+func _on_undo_button_pressed():
+	var lines = get_tree().get_nodes_in_group("line")
+	if len(lines) > 0:
+		var line = lines.pop_back()
+		line_count = len(lines)
 		line.queue_free()
 
 func _on_play_reload_button_toggled(button_pressed):
@@ -50,7 +52,7 @@ func _on_body_entered(body):
 	if body.name == "Goal":
 		Ball.gravity_scale = 0.0
 		Ball.linear_velocity = Vector2.ZERO
-		reset_level()
+		%LevelEndPopup.visible = true
 
 func reset_ball(pos):
 	Ball = ball_scene.instantiate()
@@ -97,4 +99,7 @@ func _initialize_level(level_json):
 	%GamePanelContainer.add_child(goal)
 
 func _on_skip_button_pressed():
+	reset_level()
+
+func _on_level_end_popup_next_level_pressed():
 	reset_level()
