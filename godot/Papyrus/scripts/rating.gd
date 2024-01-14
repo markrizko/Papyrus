@@ -2,8 +2,10 @@ extends ColorRect
 
 var fun_stars: Array[ShaderMaterial]
 var chal_stars: Array[ShaderMaterial]
+var impossible_check: ShaderMaterial
 var num_fun_stars: int
 var num_chal_stars: int
+var impossible: bool = false
 
 func _ready():
 	fun_stars = [
@@ -20,14 +22,17 @@ func _ready():
 		$MainContainer/ChalRatingContainer/Stars4.material as ShaderMaterial,
 		$MainContainer/ChalRatingContainer/Stars5.material as ShaderMaterial,
 	]
+	impossible_check = $MainContainer/ImpossibleCheckbox.material as ShaderMaterial
 	
 	$HTTPRequest.request_completed.connect(_on_request_completed)
 
 func reset_all():
 	reset_stars(fun_stars)
 	reset_stars(chal_stars)
+	impossible_check.set_shader_parameter("isChecked", false)
 	num_fun_stars = 0
 	num_chal_stars = 0
+	impossible = false
 
 func reset_stars(stars):
 	for star in stars:
@@ -38,6 +43,7 @@ func send_rating():
 	var data = {
 		"fun_rating": num_fun_stars,
 		"challenge_rating": num_chal_stars,
+		"impossible": impossible,
 		"json_level": GlobalEnvironment.level_json,
 	}
 	var data_json = JSON.stringify(data)
@@ -61,6 +67,10 @@ func _on_chal_stars_pressed(num):
 	for i in range(num):
 		chal_stars[i].set_shader_parameter("useYellow", true)
 	num_chal_stars = num
+
+func _on_impossible_checkbox_pressed():
+	impossible = !impossible
+	impossible_check.set_shader_parameter("isChecked", impossible)
 
 func _on_submit_button_pressed():
 	await send_rating()

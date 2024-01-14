@@ -52,7 +52,7 @@ func _on_body_entered(body):
 	if body.name == "Goal":
 		Ball.gravity_scale = 0.0
 		Ball.linear_velocity = Vector2.ZERO
-		reset_level()
+		%LevelEndPopup.visible = true
 
 func reset_ball(pos):
 	Ball = ball_scene.instantiate()
@@ -99,4 +99,7 @@ func _initialize_level(level_json):
 	%GamePanelContainer.add_child(goal)
 
 func _on_skip_button_pressed():
+	reset_level()
+
+func _on_level_end_popup_next_level_pressed():
 	reset_level()
